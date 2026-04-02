@@ -28,12 +28,15 @@ def create_comment():
         return jsonify(comment.to_dict()), 201
 
     except ValueError:
-        raise ValidationError()
+        raise ValidationError("Invalid movie model format")
 
 @bp.route("/<uuid:comment_id>", methods=["GET"])
 def get_comment(comment_id):
-    comment = comment_service.get_comment(comment_id)
-    return jsonify(comment.to_dict()), 200
+    try:
+        comment = comment_service.get_comment(comment_id)
+        return jsonify(comment.to_dict()), 200
+    except ValueError:
+        raise ValidationError("Invalid comment ID format")
 
 
 @bp.route("/<uuid:comment_id>", methods=["PUT"])

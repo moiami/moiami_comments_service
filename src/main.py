@@ -2,6 +2,7 @@ from flask import Flask
 from src.core.config import config
 from src.core.exceptions import handle_errors
 from src.api.comments import bp as comments_bp
+from src.api.likes import bp as likes_bp
 
 
 def init_app():
@@ -13,6 +14,7 @@ def init_app():
     #init_db(app)
 
     app.register_blueprint(comments_bp)
+    app.register_blueprint(likes_bp)
 
     handle_errors(app)
 
