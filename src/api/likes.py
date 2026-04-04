@@ -1,4 +1,5 @@
 import uuid
+from http import HTTPStatus
 
 from flask import Blueprint, request, jsonify
 
@@ -22,7 +23,7 @@ def create_like():
             user_id=uuid.UUID(req["user_id"]),
             comment_id=uuid.UUID(req["comment_id"]),
         )
-        return jsonify(like.to_dict()), 201
+        return jsonify(like.to_dict()), HTTPStatus.CREATED
 
     except ValueError:
         raise ValidationError("Invalid like model format")
@@ -31,7 +32,7 @@ def create_like():
 def get_likes_for_comment(comment_id):
     try:
         likes = like_service.get_likes_by_comment(comment_id)
-        return jsonify([like.to_dict() for like in likes]), 200
+        return jsonify([like.to_dict() for like in likes]), HTTPStatus.OK
     except ValueError:
         raise ValidationError("Invalid comment ID format")
 
@@ -45,6 +46,6 @@ def delete_like(like_id):
 
     try:
         like_service.delete_like(like_id, uuid.UUID(req["user_id"]))
-        return "", 200
+        return "", HTTPStatus.OK
     except ValueError:
         raise ValidationError("Invalid like ID format")

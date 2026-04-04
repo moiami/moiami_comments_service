@@ -1,8 +1,11 @@
 from flask import Flask
 from src.core.config import config
+from src.core.db import db
 from src.core.exceptions import handle_errors
 from src.api.comments import bp as comments_bp
 from src.api.likes import bp as likes_bp
+from src.models.comment import Comment
+from src.models.like import Like
 
 
 def init_app():
@@ -10,8 +13,12 @@ def init_app():
 
     app.config["DEBUG"] = config.DEBUG
     app.config["RESOURCE_SERVICE_URL"] = config.RESOURCE_SERVICE_URL
+    app.config["SQLALCHEMY_DATABASE_URI"] = config.SQLALCHEMY_DATABASE_URI
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 
-    #init_db(app)
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
     app.register_blueprint(comments_bp)
     app.register_blueprint(likes_bp)

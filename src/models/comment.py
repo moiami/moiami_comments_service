@@ -1,10 +1,9 @@
 import uuid
 
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, String, Boolean
 from sqlalchemy.dialects.postgresql import UUID
+from src.core.db import db
 
-db = SQLAlchemy()
 
 class Comment(db.Model):
 

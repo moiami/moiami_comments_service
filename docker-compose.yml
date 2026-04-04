@@ -1,0 +1,32 @@
+name: moiami
+
+services:
+  comments-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: comments-service
+    restart: unless-stopped
+    environment:
+      DEBUG: "true"
+      RESOURCE_SERVICE_URL: "localhost:8000"
+      DATABASE_URL: "postgresql://comments:comments@comments-db:5432/comments"
+    ports:
+      - "8007:8007"
+    depends_on:
+      - comments-db
+
+  comments-db:
+    image: postgres:16-alpine
+    container_name: comments-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: comments
+      POSTGRES_PASSWORD: comments
+      POSTGRES_DB: comments
+    volumes:
+      - comments_db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  comments_db_data:
