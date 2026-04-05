@@ -1,7 +1,8 @@
 def create_comment_example(client, text: str):
     response = client.post("/api/v1/comments", json={
         "text": text,
-        "user_id": "qweasdb-123asdb-asdqw"
+        "user_id": "550e8400-e29b-41d4-a716-446655440000",
+        "movie_id": "550e8400-e29b-41d4-a716-446655440001", 
     })
     return response
 
@@ -12,7 +13,7 @@ def test_create_like(client):
     comment_id = response_comment.get_json()["id"]
     
     response_like = client.post(f"/api/v1/comments/{comment_id}/likes", json={
-        "user_id": "qweasdb-123asdb-asdqw",
+        "user_id": "550e8400-e29b-41d4-a716-446655440000",  
         "comment_id": comment_id
     })
     assert response_like.status_code == 201
@@ -37,14 +38,14 @@ def test_get_likes_by_comment(client):
 
     # Create likes
     response_like = client.post(f"/api/v1/comments/{comment_id}/likes", json={
-        "user_id": "qweasdb-123asdb-asdqw",
+        "user_id": "550e8400-e29b-41d4-a716-446655440000",  # fixed
         "comment_id": comment_id
     })
     if response_like.status_code != 201:
         raise Exception(f"Failed to create like: {response_like.get_data(as_text=True)}")
     
     response_like = client.post(f"/api/v1/comments/{comment_id}/likes", json={
-        "user_id": "qweasdb-123asdb-asdqwabc",
+        "user_id": "550e8400-e29b-41d4-a716-446655440002",  # fixed, must be different
         "comment_id": comment_id
     })
     if response_like.status_code != 201:
@@ -62,13 +63,13 @@ def test_delete_like(client):
 
     # Create like
     response_like = client.post(f"/api/v1/comments/{comment_id}/likes", json={
-        "user_id": "qweasdb-123asdb-asdqw",
+        "user_id": "550e8400-e29b-41d4-a716-446655440000",
         "comment_id": comment_id
     })
     if response_like.status_code != 201:
         raise Exception(f"Failed to create like: {response_like.get_data(as_text=True)}")
 
     response = client.delete(f"/api/v1/comments/{comment_id}/likes", json={
-        "user_id": "qweasdb-123asdb-asdqw"
+        "user_id": "550e8400-e29b-41d4-a716-446655440000"
     })
     assert response.status_code == 200

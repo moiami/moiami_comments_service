@@ -22,7 +22,7 @@ class CommentService:
         return comment
 
     def get_comment(self, comment_id: UUID) -> Comment:
-        comment = Comment.query.get(comment_id)
+        comment = db.session.get(Comment, comment_id)
         if comment is None:
             raise ServiceError("Comment not found", status_code=HTTPStatus.NOT_FOUND)
         return comment
