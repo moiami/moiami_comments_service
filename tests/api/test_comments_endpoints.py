@@ -1,7 +1,8 @@
 def create_comment_example(client, text: str):
     response = client.post("/api/v1/comments", json={
         "text": text,
-        "user_id": "qweasdb-123asdb-asdqw"
+        "user_id": "550e8400-e29b-41d4-a716-446655440000",
+        "movie_id": "550e8400-e29b-41d4-a716-446655440001",
     })
     return response
 
@@ -33,10 +34,11 @@ def test_update_comment(client):
 
     response = client.put(f"/api/v1/comments/{comment_id}", json={
         "text": "Awesome movie",
-        "user_id": "qweasdb-123asdb-asdqw"
+        "user_id": "550e8400-e29b-41d4-a716-446655440000",
     })
     assert response.status_code == 200
     assert response.get_json()["text"] == "Awesome movie"
+
 
 def test_delete_comment(client):
     response = create_comment_example(client, "Nice movie")
@@ -45,6 +47,6 @@ def test_delete_comment(client):
     comment_id = response.get_json()["id"]
 
     response = client.delete(f"/api/v1/comments/{comment_id}", json={
-        "user_id": "qweasdb-123asdb-asdqw"
+        "user_id": "550e8400-e29b-41d4-a716-446655440000", 
     })
     assert response.status_code == 200
