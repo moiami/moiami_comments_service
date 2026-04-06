@@ -16,7 +16,6 @@ def init_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = config.SQLALCHEMY_DATABASE_URI
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 
-    
     db.init_app(app)
     with app.app_context():
         db.create_all()
@@ -27,6 +26,7 @@ def init_app():
     handle_errors(app)
 
     return app
+
 
 if __name__ == "__main__":
     app = init_app()

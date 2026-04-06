@@ -1,14 +1,19 @@
 import pytest
 from src.main import init_app
+from src.core.config import config
 from src.core.db import db as _db
 
 
 @pytest.fixture
 def app():
+    original_uri = config.SQLALCHEMY_DATABASE_URI
+    config.SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+
     app = init_app()
     app.config["TESTING"] = True
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
-    return app
+    yield app
+
+    config.SQLALCHEMY_DATABASE_URI = original_uri
 
 
 @pytest.fixture
