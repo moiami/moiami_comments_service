@@ -19,8 +19,10 @@ class ResourceClient:
                 return False
 
             if response.status_code != 200:
-                raise ServiceError("Resource service returned error",
-                                   status_code=HTTPStatus.INTERNAL_SERVER_ERROR)
+                raise ServiceError(
+                    "Resource service returned error",
+                    status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                )
 
             parsed = response.json()
             if not isinstance(parsed, dict):
@@ -33,10 +35,16 @@ class ResourceClient:
             return str(returned_id) == str(movie_id)
         except requests.Timeout:
             raise ServiceError(
-                "Resource service is unavailable", status_code=HTTPStatus.SERVICE_UNAVAILABLE)
+                "Resource service is unavailable",
+                status_code=HTTPStatus.SERVICE_UNAVAILABLE,
+            )
         except requests.RequestException:
             raise ServiceError(
-                "Resource service returned error", status_code=HTTPStatus.INTERNAL_SERVER_ERROR)
+                "Resource service returned error",
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
         except ValueError:
             raise ServiceError(
-                "Resource service returned invalid values", status_code=HTTPStatus.INTERNAL_SERVER_ERROR)
+                "Resource service returned invalid values",
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            )

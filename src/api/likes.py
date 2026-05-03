@@ -9,6 +9,7 @@ from src.services.likes import LikeService
 bp = Blueprint("likes", __name__, url_prefix="/api/v1/comments")
 like_service = LikeService()
 
+
 @bp.route("/<uuid:comment_id>/likes", methods=["POST"])
 def create_like(comment_id):
     req = request.get_json()
@@ -27,6 +28,7 @@ def create_like(comment_id):
 
     except ValueError:
         raise ValidationError("Invalid like model format")
+
 
 @bp.route("/<uuid:comment_id>/likes", methods=["GET"])
 def get_likes_for_comment(comment_id):

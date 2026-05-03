@@ -4,8 +4,6 @@ from src.core.db import db
 from src.core.exceptions import handle_errors
 from src.api.comments import bp as comments_bp
 from src.api.likes import bp as likes_bp
-from src.models.comment import Comment
-from src.models.like import Like
 
 
 def init_app():
