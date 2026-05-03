@@ -6,7 +6,6 @@ from src.core.db import db
 
 
 class Like(db.Model):
-
     __tablename__ = "likes"
 
     id = Column(UUID(), primary_key=True, default=uuid.uuid4)

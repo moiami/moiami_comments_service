@@ -5,7 +5,6 @@ from sqlalchemy.dialects.postgresql import UUID
 from src.core.db import db
 
 
-
 class Comment(db.Model):
     __tablename__ = "comments"
 

@@ -5,6 +5,7 @@ from src.core.exceptions import handle_errors
 from src.api.comments import bp as comments_bp
 from src.api.likes import bp as likes_bp
 
+
 def init_app():
     app = Flask(__name__)
 

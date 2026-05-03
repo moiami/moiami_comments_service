@@ -25,20 +25,22 @@ def create_comment():
         comment = comment_service.create_comment(
             text=req["text"],
             user_id=uuid.UUID(req["user_id"]),
-            movie_id=uuid.UUID(req["movie_id"])
+            movie_id=uuid.UUID(req["movie_id"]),
         )
         return jsonify(comment.to_dict()), HTTPStatus.CREATED
 
     except ValueError:
         raise ValidationError("Invalid comment model format")
 
+
 @bp.route("/hide/<uuid:comment_id>", methods=["POST"])
 def hide_comment(comment_id):
     try:
         comment_service.hide_comment(comment_id)
-    except ServiceError as e:
+    except ServiceError:
         raise Exception("Invalid comment ID format")
     return "comment was hide", HTTPStatus.OK
+
 
 @bp.route("/<uuid:comment_id>", methods=["GET"])
 def get_comment(comment_id):
