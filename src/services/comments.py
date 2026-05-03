@@ -49,3 +49,11 @@ class CommentService:
 
         db.session.delete(comment)
         db.session.commit()
+
+    def hide_comment(self, comment_id: UUID) -> None:
+        comment = self.get_comment(comment_id)
+        if comment is None:
+            raise ServiceError("Comment not found", status_code=HTTPStatus.NOT_FOUND)
+        comment.hide = True
+        db.session.commit()
+        return comment

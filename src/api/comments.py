@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 from flask import Blueprint, request, jsonify
 
-from src.core.exceptions import ValidationError
+from src.core.exceptions import ValidationError, ServiceError
 from src.services.comments import CommentService
 
 bp = Blueprint("comments", __name__, url_prefix="/api/v1/comments")
@@ -32,6 +32,13 @@ def create_comment():
     except ValueError:
         raise ValidationError("Invalid comment model format")
 
+@bp.route("/hide/<uuid:comment_id>", methods=["POST"])
+def hide_comment(comment_id):
+    try:
+        comment_service.hide_comment(comment_id)
+    except ServiceError as e:
+        raise Exception("Invalid comment ID format")
+    return "comment was hide", HTTPStatus.OK
 
 @bp.route("/<uuid:comment_id>", methods=["GET"])
 def get_comment(comment_id):

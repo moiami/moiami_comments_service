@@ -5,8 +5,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from src.core.db import db
 
 
-class Comment(db.Model):
 
+class Comment(db.Model):
     __tablename__ = "comments"
 
     id = Column(UUID(), primary_key=True, default=uuid.uuid4)
@@ -14,7 +14,7 @@ class Comment(db.Model):
     user_id = Column(UUID(), nullable=False)
     movie_id = Column(UUID(), nullable=False)
     hide = Column(Boolean, default=False, nullable=False)
-    
+
     def to_dict(self):
         return {
             "id": str(self.id),
