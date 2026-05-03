@@ -35,6 +35,12 @@ def get_likes_for_comment(comment_id):
     return jsonify([like.to_dict() for like in likes]), HTTPStatus.OK
 
 
+@bp.route("/<uuid:comment_id>/likes/count", methods=["GET"])
+def count_likes_for_comment(comment_id):
+    likes_count = like_service.count_likes_by_comment(comment_id)
+    return jsonify({"likes_count": likes_count}), HTTPStatus.OK
+
+
 @bp.route("/<uuid:comment_id>/likes", methods=["DELETE"])
 def delete_like(comment_id):
     req = request.get_json()

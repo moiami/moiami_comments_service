@@ -105,6 +105,26 @@ Path:
 
 Статусы: `200`
 
+### GET /api/v1/comments/{comment_id}/likes/count
+
+Получить количество лайков комментария
+
+Path:
+- `comment_id` (UUID)
+
+Пример ответа:
+```json
+{
+  "likes_count": 2
+}
+```
+
+Поля ответа:
+- `likes_count` (int) — количество лайков у комментария
+
+Статусы:
+- `200` — количество лайков успешно получено
+- `404` — комментарий с переданным `comment_id` не найден
 
 ### DELETE /api/v1/comments/{comment_id}/likes
 

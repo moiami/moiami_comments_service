@@ -3,6 +3,7 @@ from http import HTTPStatus
 
 from src.core.db import db
 from src.core.exceptions import ServiceError
+from src.models.comment import Comment
 from src.models.like import Like
 # from src.services.resource_client import ResourceClient
 from sqlalchemy.exc import IntegrityError
@@ -32,6 +33,13 @@ class LikeService:
     
     def get_likes_by_comment(self, comment_id: UUID) -> list[Like]:
         return Like.query.filter_by(comment_id=comment_id).all()
+
+    def count_likes_by_comment(self, comment_id: UUID) -> int:
+        comment = db.session.get(Comment, comment_id)
+        if comment is None:
+            raise ServiceError("Comment not found", status_code=HTTPStatus.NOT_FOUND)
+
+        return Like.query.filter_by(comment_id=comment_id).count()
 
     def delete_like_by_comment_and_user(self, comment_id: UUID, user_id: UUID) -> None:
         like = Like.query.filter_by(comment_id=comment_id, user_id=user_id).first()
