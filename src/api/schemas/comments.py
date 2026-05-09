@@ -14,12 +14,3 @@ class CommentUpdateSchema(Schema):
 
 class CommentDeleteSchema(Schema):
     user_id = fields.UUID(required=True)
-
-
-class CommentResponseSchema(Schema):
-    id = fields.UUID()
-    text = fields.String()
-    user_id = fields.UUID()
-    movie_id = fields.UUID()
-    hide = fields.Boolean()
-    created_at = fields.DateTime(allow_none=True)
