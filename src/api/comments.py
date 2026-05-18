@@ -44,7 +44,10 @@ def create_comment():
             user_id=data["user_id"],
             movie_id=data["movie_id"],
         )
-        return jsonify(comment.to_dict()), HTTPStatus.CREATED
+
+        response_data = comment.to_dict()
+        response_data["id"] = str(comment.id)
+        return jsonify(response_data), HTTPStatus.CREATED
     except ValueError:
         raise ValidationError("Invalid comment model format")
 
