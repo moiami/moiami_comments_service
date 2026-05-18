@@ -1,10 +1,11 @@
 from uuid import UUID
 from http import HTTPStatus
 
-
 from src.core.db import db
 from src.core.exceptions import ServiceError
 from src.models.comment import Comment
+
+
 # from src.services.resource_client import ResourceClient
 
 
@@ -19,6 +20,12 @@ class CommentService:
         db.session.commit()
         return comment
 
+    def get_comments(self) -> list[Comment]:
+        comments = db.session.query(Comment).all()
+        if not comments:
+            raise ServiceError("Comments not found", status_code=HTTPStatus.NOT_FOUND)
+        return comments
+
     def get_comment(self, comment_id: UUID) -> Comment:
         comment = db.session.get(Comment, comment_id)
         if comment is None:
@@ -26,7 +33,7 @@ class CommentService:
         return comment
 
     def update_comment(
-        self, comment_id: UUID, text: str | None, user_id: UUID
+            self, comment_id: UUID, text: str | None, user_id: UUID
     ) -> Comment:
         comment = self.get_comment(comment_id)
 

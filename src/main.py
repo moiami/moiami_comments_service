@@ -28,6 +28,7 @@ def init_app():
     return app
 
 
+app = init_app()
+
 if __name__ == "__main__":
-    app = init_app()
-    app.run(host="0.0.0.0", port=8007, debug=True, use_reloader=False)
+    app.run(host="0.0.0.0", port=8007, debug=False, use_reloader=False)

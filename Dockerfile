@@ -32,4 +32,9 @@ USER appuser
 
 EXPOSE 8007
 
-CMD ["python", "-m", "src.main"]
+RUN uv pip install gunicorn
+
+USER appuser
+EXPOSE 8007
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8007", "--workers", "2", "src.main:app"]

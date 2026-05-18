@@ -14,6 +14,32 @@ bp = Blueprint("comments", __name__, url_prefix="/api/v1/comments")
 comment_service = CommentService()
 
 
+@bp.route("/", methods=["GET"])
+def get_comments():
+    """
+    Get list of comments
+    ---
+    tags:
+      - Comments
+    parameters:
+      - name: movie_id
+        in: query
+        required: false
+        type: string
+        format: uuid
+        description: Filter comments by movie ID
+    responses:
+      200:
+        description: List of comments
+      400:
+        description: Validation error
+    """
+    try:
+        return jsonify([comment.to_dict() for comment in comment_service.get_comments()]), HTTPStatus.OK
+    except Exception:
+        raise Exception
+
+
 @bp.route("/", methods=["POST"])
 def create_comment():
     """
