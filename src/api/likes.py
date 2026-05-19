@@ -23,14 +23,40 @@ def create_like(comment_id):
         required: true
         type: string
         format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440010"
       - in: body
         name: body
         required: true
+        schema:
+          $ref: '#/definitions/LikeCreate'
     responses:
       201:
         description: Like created successfully
+        schema:
+          $ref: '#/definitions/Like'
+        examples:
+          application/json:
+            id: "550e8400-e29b-41d4-a716-446655440020"
+            user_id: "550e8400-e29b-41d4-a716-446655440000"
+            comment_id: "550e8400-e29b-41d4-a716-446655440010"
+            comment:
+              id: "550e8400-e29b-41d4-a716-446655440010"
+              text: "Nice movie"
+              user_id: "550e8400-e29b-41d4-a716-446655440000"
+              movie_id: "550e8400-e29b-41d4-a716-446655440001"
+              hide: false
       400:
         description: Validation error
+        schema:
+          $ref: '#/definitions/Error'
+      409:
+        description: User already liked this comment
+        schema:
+          $ref: '#/definitions/Error'
+        examples:
+          application/json:
+            error: "service_error"
+            message: "User already liked this comment"
     """
     try:
         schema = LikeCreateSchema()
@@ -62,13 +88,25 @@ def get_likes(comment_id):
         required: true
         type: string
         format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440010"
     responses:
       200:
-        description: List of likes
+        description: List of likes (may be empty)
         schema:
           type: array
-      400:
-        description: Invalid comment ID format
+          items:
+            $ref: '#/definitions/Like'
+        examples:
+          application/json:
+            - id: "550e8400-e29b-41d4-a716-446655440020"
+              user_id: "550e8400-e29b-41d4-a716-446655440000"
+              comment_id: "550e8400-e29b-41d4-a716-446655440010"
+              comment:
+                id: "550e8400-e29b-41d4-a716-446655440010"
+                text: "Nice movie"
+                user_id: "550e8400-e29b-41d4-a716-446655440000"
+                movie_id: "550e8400-e29b-41d4-a716-446655440001"
+                hide: false
     """
     likes = like_service.get_likes_by_comment(comment_id)
     return jsonify([like.to_dict() for like in likes]), HTTPStatus.OK
@@ -87,14 +125,32 @@ def delete_like(comment_id):
         required: true
         type: string
         format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440010"
       - in: body
         name: body
         required: true
+        schema:
+          $ref: '#/definitions/LikeCreate'
     responses:
       200:
         description: Like removed successfully
+        schema:
+          $ref: '#/definitions/MessageResponse'
+        examples:
+          application/json:
+            message: "deleted"
       400:
         description: Validation error
+        schema:
+          $ref: '#/definitions/Error'
+      404:
+        description: Like not found
+        schema:
+          $ref: '#/definitions/Error'
+        examples:
+          application/json:
+            error: "service_error"
+            message: "Like not found"
     """
     try:
         schema = LikeCreateSchema()
@@ -126,11 +182,23 @@ def get_likes_count(comment_id):
         required: true
         type: string
         format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440010"
     responses:
       200:
         description: Likes count
-      400:
-        description: Invalid comment ID format
+        schema:
+          $ref: '#/definitions/LikesCount'
+        examples:
+          application/json:
+            likes_count: 2
+      404:
+        description: Comment not found
+        schema:
+          $ref: '#/definitions/Error'
+        examples:
+          application/json:
+            error: "service_error"
+            message: "Comment not found"
     """
     count = like_service.count_likes_by_comment(comment_id)
     return jsonify({"likes_count": count}), HTTPStatus.OK

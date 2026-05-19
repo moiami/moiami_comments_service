@@ -5,6 +5,8 @@ from src.core.exceptions import handle_errors
 from src.api.comments import bp as comments_bp
 from src.api.likes import bp as likes_bp
 from flasgger import Swagger
+
+from src.api.swagger_defs import SWAGGER_TEMPLATE
 from src.core.config import config
 
 def init_app():
@@ -15,7 +17,7 @@ def init_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = config.SQLALCHEMY_DATABASE_URI
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 
-    Swagger(app)
+    Swagger(app, template=SWAGGER_TEMPLATE)
 
     db.init_app(app)
     with app.app_context():

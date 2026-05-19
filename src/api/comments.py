@@ -14,25 +14,35 @@ bp = Blueprint("comments", __name__, url_prefix="/api/v1/comments")
 comment_service = CommentService()
 
 
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 def get_comments():
     """
     Get list of comments
     ---
     tags:
       - Comments
-    parameters:
-      - name: movie_id
-        in: query
-        required: false
-        type: string
-        format: uuid
-        description: Filter comments by movie ID
     responses:
       200:
         description: List of comments
-      400:
-        description: Validation error
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Comment'
+        examples:
+          application/json:
+            - id: "550e8400-e29b-41d4-a716-446655440010"
+              text: "Nice movie"
+              user_id: "550e8400-e29b-41d4-a716-446655440000"
+              movie_id: "550e8400-e29b-41d4-a716-446655440001"
+              hide: false
+      404:
+        description: No comments found
+        schema:
+          $ref: '#/definitions/Error'
+        examples:
+          application/json:
+            error: "service_error"
+            message: "Comments not found"
     """
     try:
         return jsonify([comment.to_dict() for comment in comment_service.get_comments()]), HTTPStatus.OK
@@ -40,7 +50,7 @@ def get_comments():
         raise Exception
 
 
-@bp.route("/", methods=["POST"])
+@bp.route("", methods=["POST"])
 def create_comment():
     """
     Create a new comment
@@ -51,11 +61,28 @@ def create_comment():
       - in: body
         name: body
         required: true
+        schema:
+          $ref: '#/definitions/CommentCreate'
     responses:
       201:
         description: Comment created successfully
+        schema:
+          $ref: '#/definitions/Comment'
+        examples:
+          application/json:
+            id: "550e8400-e29b-41d4-a716-446655440010"
+            text: "Nice movie"
+            user_id: "550e8400-e29b-41d4-a716-446655440000"
+            movie_id: "550e8400-e29b-41d4-a716-446655440001"
+            hide: false
       400:
         description: Validation error
+        schema:
+          $ref: '#/definitions/Error'
+        examples:
+          application/json:
+            error: "service_error"
+            message: "{'text': ['Missing data for required field.']}"
     """
     try:
         schema = CommentCreateSchema()
@@ -91,11 +118,23 @@ def hide_comment(comment_id):
         required: true
         type: string
         format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440010"
     responses:
       200:
         description: Comment hidden successfully
+        schema:
+          $ref: '#/definitions/MessageResponse'
+        examples:
+          application/json:
+            message: "comment was hidden"
       400:
-        description: Invalid comment ID
+        description: Comment not found or invalid ID
+        schema:
+          $ref: '#/definitions/Error'
+        examples:
+          application/json:
+            error: "service_error"
+            message: "Invalid comment ID"
     """
     try:
         comment_service.hide_comment(comment_id)
@@ -117,11 +156,31 @@ def get_comment(comment_id):
         required: true
         type: string
         format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440010"
     responses:
       200:
         description: Comment details
+        schema:
+          $ref: '#/definitions/Comment'
+        examples:
+          application/json:
+            id: "550e8400-e29b-41d4-a716-446655440010"
+            text: "Nice movie"
+            user_id: "550e8400-e29b-41d4-a716-446655440000"
+            movie_id: "550e8400-e29b-41d4-a716-446655440001"
+            hide: false
       400:
         description: Invalid comment ID format
+        schema:
+          $ref: '#/definitions/Error'
+      404:
+        description: Comment not found
+        schema:
+          $ref: '#/definitions/Error'
+        examples:
+          application/json:
+            error: "service_error"
+            message: "Comment not found"
     """
     try:
         comment = comment_service.get_comment(comment_id)
@@ -137,20 +196,47 @@ def update_comment(comment_id):
     ---
     tags:
       - Comments
+    description: Only the comment owner can update it
     parameters:
       - name: comment_id
         in: path
         required: true
         type: string
         format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440010"
       - in: body
         name: body
         required: true
+        schema:
+          $ref: '#/definitions/CommentUpdate'
     responses:
       200:
         description: Comment updated
+        schema:
+          $ref: '#/definitions/Comment'
+        examples:
+          application/json:
+            id: "550e8400-e29b-41d4-a716-446655440010"
+            text: "Updated text"
+            user_id: "550e8400-e29b-41d4-a716-446655440000"
+            movie_id: "550e8400-e29b-41d4-a716-446655440001"
+            hide: false
       400:
         description: Validation error
+        schema:
+          $ref: '#/definitions/Error'
+      403:
+        description: User is not the owner of this comment
+        schema:
+          $ref: '#/definitions/Error'
+        examples:
+          application/json:
+            error: "service_error"
+            message: "User is not the owner of this comment"
+      404:
+        description: Comment not found
+        schema:
+          $ref: '#/definitions/Error'
     """
     try:
         schema = CommentUpdateSchema()
@@ -177,20 +263,39 @@ def delete_comment(comment_id):
     ---
     tags:
       - Comments
+    description: Only the comment owner can delete it
     parameters:
       - name: comment_id
         in: path
         required: true
         type: string
         format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440010"
       - in: body
         name: body
         required: true
+        schema:
+          $ref: '#/definitions/CommentDelete'
     responses:
       200:
         description: Comment deleted
+        schema:
+          $ref: '#/definitions/MessageResponse'
+        examples:
+          application/json:
+            message: "deleted"
       400:
         description: Validation error
+        schema:
+          $ref: '#/definitions/Error'
+      403:
+        description: User is not the owner of this comment
+        schema:
+          $ref: '#/definitions/Error'
+      404:
+        description: Comment not found
+        schema:
+          $ref: '#/definitions/Error'
     """
     try:
         schema = CommentDeleteSchema()
