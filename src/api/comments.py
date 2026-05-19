@@ -14,7 +14,7 @@ bp = Blueprint("comments", __name__, url_prefix="/api/v1/comments")
 comment_service = CommentService()
 
 
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 def get_comments():
     """
     Get list of comments
@@ -50,7 +50,7 @@ def get_comments():
         raise Exception
 
 
-@bp.route("/", methods=["POST"])
+@bp.route("", methods=["POST"])
 def create_comment():
     """
     Create a new comment

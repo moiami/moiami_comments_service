@@ -20,10 +20,7 @@ def test_create_like(client):
 
     response_like = client.post(
         f"/api/v1/comments/{comment_id}/likes",
-        json={
-            "user_id": "550e8400-e29b-41d4-a716-446655440000",
-            "comment_id": comment_id,
-        },
+        json={"user_id": "550e8400-e29b-41d4-a716-446655440000"},
     )
     assert response_like.status_code == 201
 
@@ -57,10 +54,7 @@ def test_get_likes_by_comment(client):
     # Create likes
     response_like = client.post(
         f"/api/v1/comments/{comment_id}/likes",
-        json={
-            "user_id": "550e8400-e29b-41d4-a716-446655440000",  # fixed
-            "comment_id": comment_id,
-        },
+        json={"user_id": "550e8400-e29b-41d4-a716-446655440000"},
     )
     if response_like.status_code != 201:
         raise Exception(
@@ -69,10 +63,7 @@ def test_get_likes_by_comment(client):
 
     response_like = client.post(
         f"/api/v1/comments/{comment_id}/likes",
-        json={
-            "user_id": "550e8400-e29b-41d4-a716-446655440002",  # fixed, must be different
-            "comment_id": comment_id,
-        },
+        json={"user_id": "550e8400-e29b-41d4-a716-446655440002"},
     )
     if response_like.status_code != 201:
         raise Exception(
@@ -93,10 +84,7 @@ def test_delete_like(client):
     # Create like
     response_like = client.post(
         f"/api/v1/comments/{comment_id}/likes",
-        json={
-            "user_id": "550e8400-e29b-41d4-a716-446655440000",
-            "comment_id": comment_id,
-        },
+        json={"user_id": "550e8400-e29b-41d4-a716-446655440000"},
     )
     if response_like.status_code != 201:
         raise Exception(
